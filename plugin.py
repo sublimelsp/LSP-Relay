@@ -18,7 +18,7 @@ class LspRelayPlugin(NpmClientHandler):
 
     package_name = __package__
     server_directory = 'language-server'
-    server_binary_path = os.path.join(server_directory, 'start-server.js')
+    server_binary_path = os.path.join(server_directory, 'node_modules', 'relay-compiler', 'cli.js')
 
     @classmethod
     def _get_vscode_relay_path_to_config(cls, workspace_path: str) -> Optional[str]:
@@ -54,9 +54,17 @@ class LspRelayPlugin(NpmClientHandler):
         settings = configuration.settings
         workspace_path = workspace_folders[0].path if workspace_folders else ''
 
+        # Remove --stdio if present (relay lsp uses stdio by default)
+        command = configuration.command
+        if '--stdio' in command:
+            command.remove('--stdio')
+
+        # Insert 'lsp' subcommand after the script path
+        command.append('lsp')
+
         output_level = settings.get('lspOutputLevel') or 'quiet-with-errors'
         if output_level:
-            configuration.command.append('--output={}'.format(output_level))
+            command.append('--output={}'.format(output_level))
 
         path_to_config = settings.get('pathToConfig') or ''
         if not path_to_config and settings.get('useVSCodeRelaySettings') and workspace_path:
@@ -66,6 +74,6 @@ class LspRelayPlugin(NpmClientHandler):
             # Resolve relative paths against workspace root
             if workspace_path and not os.path.isabs(path_to_config):
                 path_to_config = os.path.join(workspace_path, path_to_config)
-            configuration.command.append(path_to_config)
+            command.append(path_to_config)
 
         return None
