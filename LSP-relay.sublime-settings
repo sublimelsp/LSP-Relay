@@ -1,18 +1,19 @@
 {
 	"auto_complete_selector": "- comment",
 	"initializationOptions": {},
-	"settings": {},
-	"selector": "source.js | source.jsx | source.ts | source.tsx",
-	// Path to a relay config file (absolute or relative to project root).
-	// Supports: relay.config.json, relay.config.js, relay.config.cjs, relay.config.mjs
-	// If not specified, the compiler searches for config in package.json or relay.config.* files.
-	// Example: "./relay.config.js" or "/Users/you/project/relay.config.js"
-	"pathToConfig": "",
-	// LSP output verbosity level.
-	// Possible values: "debug", "quiet", "quiet-with-errors", "verbose"
-	"lspOutputLevel": "quiet-with-errors",
-	// When enabled, loads pathToConfig from .vscode/settings.json if not set above.
-	// Looks for "relay.pathToConfig" (either as a flat key or nested under "relay").
-	// Useful for projects where other developers use VS Code with the Relay extension.
-	"useVSCodeRelaySettings": false
+	"settings": {
+		// Path to a relay config file (absolute or relative to project root).
+		// Supports: relay.config.json, relay.config.js, relay.config.cjs, relay.config.mjs
+		// If not specified, the compiler searches for config in package.json or relay.config.* files.
+		// Example: "./relay.config.js" or "/Users/you/project/relay.config.js"
+		"pathToConfig": "",
+		// LSP output verbosity level.
+		// Possible values: "debug", "quiet", "quiet-with-errors", "verbose"
+		"lspOutputLevel": "quiet-with-errors",
+		// When enabled, loads pathToConfig from .vscode/settings.json if not set above.
+		// Looks for "relay.pathToConfig" (either as a flat key or nested under "relay").
+		// Useful for projects where other developers use VS Code with the Relay extension.
+		"useVSCodeRelaySettings": false
+	},
+	"selector": "source.js | source.jsx | source.ts | source.tsx"
 }

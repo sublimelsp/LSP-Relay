@@ -29,13 +29,13 @@ Refer to the [Relay Compiler Configuration](https://relay.dev/docs/guides/compil
 
 Open the global settings file using the command palette with `Preferences: LSP-relay Settings` or from the Sublime menu (`Preferences > Package Settings > LSP > Servers > LSP-relay`).
 
-Available settings:
+Available settings (inside the `settings` object):
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `pathToConfig` | Path to a relay config file, absolute or relative to project root (`relay.config.json`, `.js`, `.cjs`, or `.mjs`). If not specified, the compiler searches for config in `package.json` or `relay.config.*` files. | `""` |
-| `lspOutputLevel` | LSP output verbosity level. Options: `debug`, `quiet`, `quiet-with-errors`, `verbose` | `"quiet-with-errors"` |
-| `useVSCodeRelaySettings` | When enabled, loads `pathToConfig` from `.vscode/settings.json` if not set above. | `false` |
+| `settings.pathToConfig` | Path to a relay config file, absolute or relative to project root (`relay.config.json`, `.js`, `.cjs`, or `.mjs`). If not specified, the compiler searches for config in `package.json` or `relay.config.*` files. | `""` |
+| `settings.lspOutputLevel` | LSP output verbosity level. Options: `debug`, `quiet`, `quiet-with-errors`, `verbose` | `"quiet-with-errors"` |
+| `settings.useVSCodeRelaySettings` | When enabled, loads `pathToConfig` from `.vscode/settings.json` if not set above. | `false` |
 
 ### Project-specific settings
 
@@ -49,8 +49,10 @@ You can override settings per-project in your `.sublime-project` file:
   "settings": {
     "LSP": {
       "LSP-relay": {
-        "pathToConfig": "/path/to/your/relay.config.js",
-        "lspOutputLevel": "debug"
+        "settings": {
+          "pathToConfig": "/path/to/your/relay.config.js",
+          "lspOutputLevel": "debug"
+        }
       }
     }
   }
@@ -65,7 +67,9 @@ For teams where some developers use VS Code with the [Relay extension](https://m
 
 ```json
 {
-  "useVSCodeRelaySettings": true
+  "settings": {
+    "useVSCodeRelaySettings": true
+  }
 }
 ```
 
