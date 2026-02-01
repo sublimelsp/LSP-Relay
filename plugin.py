@@ -54,12 +54,12 @@ class LspRelayPlugin(NpmClientHandler):
         settings = configuration.settings
         workspace_path = workspace_folders[0].path if workspace_folders else ''
 
-        output_level = settings.get('lspOutputLevel', 'quiet-with-errors')
+        output_level = settings.get('lspOutputLevel') or 'quiet-with-errors'
         if output_level:
             configuration.command.append('--output={}'.format(output_level))
 
-        path_to_config = settings.get('pathToConfig', '')
-        if not path_to_config and settings.get('useVSCodeRelaySettings', False) and workspace_path:
+        path_to_config = settings.get('pathToConfig') or ''
+        if not path_to_config and settings.get('useVSCodeRelaySettings') and workspace_path:
             path_to_config = cls._get_vscode_relay_path_to_config(workspace_path) or ''
 
         if path_to_config:
