@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 
 const relayBinary = require('relay-compiler');
 
-if (relayBinary === null) {
+if (!relayBinary) {
     process.stderr.write(`Platform "${process.platform} (${process.arch})" not supported.\n`);
     process.exit(1);
 }
