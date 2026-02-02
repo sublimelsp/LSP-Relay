@@ -1,8 +1,10 @@
 """LSP client for the Relay compiler's built-in language server."""
+from __future__ import annotations
+from LSP.plugin import ClientConfig, WorkspaceFolder
+from lsp_utils import NpmClientHandler
+from typing import final
 import os
 import sublime
-from lsp_utils import NpmClientHandler
-from LSP.plugin.core.typing import List, Optional
 
 
 def plugin_loaded() -> None:
@@ -13,6 +15,7 @@ def plugin_unloaded() -> None:
     LspRelayPlugin.cleanup()
 
 
+@final
 class LspRelayPlugin(NpmClientHandler):
     """Sublime Text LSP client for Relay language server."""
 
@@ -21,7 +24,7 @@ class LspRelayPlugin(NpmClientHandler):
     server_binary_path = os.path.join(server_directory, 'node_modules', 'relay-compiler', 'cli.js')
 
     @classmethod
-    def _get_vscode_relay_path_to_config(cls, workspace_path: str) -> Optional[str]:
+    def _get_vscode_relay_path_to_config(cls, workspace_path: str) -> str | None:
         """Load pathToConfig from .vscode/settings.json if it exists."""
         vscode_settings_path = os.path.join(workspace_path, '.vscode', 'settings.json')
         if not os.path.isfile(vscode_settings_path):
@@ -47,9 +50,9 @@ class LspRelayPlugin(NpmClientHandler):
         cls,
         window: sublime.Window,
         initiating_view: sublime.View,
-        workspace_folders: List,
-        configuration: 'ClientConfig'  # type: ignore
-    ) -> Optional[str]:
+        workspace_folders: list[WorkspaceFolder],
+        configuration: ClientConfig
+    ) -> str | None:
         """Configure command arguments before the language server starts."""
         settings = configuration.settings
         workspace_path = workspace_folders[0].path if workspace_folders else ''
