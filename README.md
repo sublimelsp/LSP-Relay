@@ -9,9 +9,20 @@ Provides an LSP client for the [Relay Compiler](https://relay.dev/docs/guides/co
 * Install [LSP](https://packagecontrol.io/packages/LSP) and `LSP-relay` from Package Control.
 * Restart Sublime.
 
-## Project configuration
+## Applicable Selectors
 
-The Relay language server requires a `relay.config.json` (or `relay.config.js`) in your project root with at minimum:
+This language server operates on JavaScript and TypeScript files (`source.js`, `source.jsx`, `source.ts`, `source.tsx`).
+
+## Configuration
+
+### Relay configuration
+
+The Relay language server requires a Relay configuration in your project. This can be:
+
+- `relay.config.json`, `relay.config.js`, `relay.config.cjs`, or `relay.config.mjs` in your project root
+- A `"relay"` key in your `package.json`
+
+Minimal example (`relay.config.json`):
 
 ```json
 {
@@ -23,17 +34,15 @@ The Relay language server requires a `relay.config.json` (or `relay.config.js`) 
 
 Refer to the [Relay Compiler Configuration](https://relay.dev/docs/guides/compiler/) documentation for more details.
 
-## Configuration
+### Plugin settings
 
-### Global settings
-
-Open the global settings file using the command palette with `Preferences: LSP-relay Settings` or from the Sublime menu (`Preferences > Package Settings > LSP > Servers > LSP-relay`).
+Open the settings file using the command palette with `Preferences: LSP-relay Settings` or from the Sublime menu (`Preferences > Package Settings > LSP > Servers > LSP-relay`).
 
 Available settings (inside the `settings` object):
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `settings.pathToConfig` | Path to a relay config file, absolute or relative to project root (`relay.config.json`, `.js`, `.cjs`, or `.mjs`). If not specified, the compiler searches for config in `package.json` or `relay.config.*` files. | `""` |
+| `settings.pathToConfig` | Path to a relay config file, absolute or relative to project root. If not specified, the compiler searches for config in `package.json` or `relay.config.*` files. | `""` |
 | `settings.lspOutputLevel` | LSP output verbosity level. Options: `debug`, `quiet`, `quiet-with-errors`, `verbose` | `"quiet-with-errors"` |
 | `settings.useVSCodeRelaySettings` | When enabled, loads `pathToConfig` from `.vscode/settings.json` if not set above. | `false` |
 
