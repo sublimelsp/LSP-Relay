@@ -1,0 +1,13 @@
+{
+  "name": "relay-lsp",
+  "description": "Relay language server",
+  "license": "MIT",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "relay-compiler": "20.1.1"
+  }
+}

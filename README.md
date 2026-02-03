@@ -1,0 +1,99 @@
+# LSP-relay
+
+[Relay](https://relay.dev/) language server support for Sublime Text's LSP plugin.
+
+Provides an LSP client for the [Relay Compiler](https://relay.dev/docs/guides/compiler/)'s built-in language server, enabling diagnostics, autocomplete, go-to-definition, and other IDE features for Relay projects in JavaScript and TypeScript files.
+
+## Installation
+
+* Install [LSP](https://packagecontrol.io/packages/LSP) and `LSP-relay` from Package Control.
+* Restart Sublime.
+
+## Applicable Selectors
+
+This language server operates on JavaScript and TypeScript files (`source.js`, `source.jsx`, `source.ts`, `source.tsx`). It provides IDE features within `graphql` tagged template literals where Relay fragments, queries, mutations, and subscriptions are defined.
+
+## Configuration
+
+### Relay configuration
+
+The Relay language server requires a Relay configuration in your project. 
+
+Refer to the [Relay Compiler Configuration](https://relay.dev/docs/guides/compiler/) documentation for details.
+
+### Plugin settings
+
+Open the settings file using the command palette with `Preferences: LSP-relay Settings` or from the Sublime menu (`Preferences > Package Settings > LSP > Servers > LSP-relay`).
+
+Available settings (inside the `settings` object):
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `settings.pathToConfig` | Path to a relay config file, absolute or relative to project root. If not specified, the compiler searches for config in `package.json` or `relay.config.*` files. | `""` |
+| `settings.lspOutputLevel` | LSP output verbosity level. Options: `debug`, `quiet`, `quiet-with-errors`, `verbose` | `"quiet-with-errors"` |
+| `settings.useVSCodeRelaySettings` | When enabled, loads `pathToConfig` from `.vscode/settings.json` if not set above. | `false` |
+
+### Project-specific settings
+
+You can override settings per-project in your `.sublime-project` file:
+
+```json
+{
+  "folders": [
+    { "path": "." }
+  ],
+  "settings": {
+    "LSP": {
+      "LSP-relay": {
+        "settings": {
+          "pathToConfig": "/path/to/your/relay.config.js",
+          "lspOutputLevel": "debug"
+        }
+      }
+    }
+  }
+}
+```
+
+Project settings take precedence over global settings.
+
+### VS Code settings interoperability
+
+For teams where some developers use VS Code with the [Relay extension](https://marketplace.visualstudio.com/items?itemName=meta.relay), you can enable `useVSCodeRelaySettings` to automatically read the relay config path from `.vscode/settings.json`:
+
+```json
+{
+  "settings": {
+    "useVSCodeRelaySettings": true
+  }
+}
+```
+
+When enabled, LSP-relay will look for `relay.pathToConfig` in your project's `.vscode/settings.json`:
+
+```json
+{
+  "relay.pathToConfig": "./relay.config.js"
+}
+```
+
+This allows sharing relay configuration across both editors without duplicating settings.
+
+## Development
+
+### Setup
+
+This project uses [pixi](https://pixi.sh/) for Python environment management. To set up the development environment:
+
+```bash
+pixi install
+```
+
+If you use [direnv](https://direnv.net/), the environment will be activated automatically when you enter the project directory.
+
+### Formatting and Linting
+
+```bash
+pixi run format  # Auto-format with ruff
+pixi run lint    # Check with flake8/pycodestyle
+```
