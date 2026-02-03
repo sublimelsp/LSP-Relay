@@ -36,7 +36,12 @@ Install the package in Sublime Text's Packages folder (symlink or copy), then op
 
 ## Code Style
 
-**Python linting:**
+**Python linting (using pixi):**
+```bash
+pixi run lint
+```
+
+Or directly:
 ```bash
 flake8 plugin.py --max-line-length=120
 pycodestyle plugin.py --max-line-length=120

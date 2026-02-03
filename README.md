@@ -11,7 +11,7 @@ Provides an LSP client for the [Relay Compiler](https://relay.dev/docs/guides/co
 
 ## Applicable Selectors
 
-This language server operates on JavaScript and TypeScript files (`source.js`, `source.jsx`, `source.ts`, `source.tsx`).
+This language server operates on JavaScript and TypeScript files (`source.js`, `source.jsx`, `source.ts`, `source.tsx`). It provides IDE features within `graphql` tagged template literals where Relay fragments, queries, mutations, and subscriptions are defined.
 
 ## Configuration
 
@@ -78,3 +78,28 @@ When enabled, LSP-relay will look for `relay.pathToConfig` in your project's `.v
 ```
 
 This allows sharing relay configuration across both editors without duplicating settings.
+
+## Development
+
+### Setup
+
+This project uses [pixi](https://pixi.sh/) for Python environment management. To set up the development environment:
+
+```bash
+pixi install
+```
+
+If you use [direnv](https://direnv.net/), the environment will be activated automatically when you enter the project directory.
+
+### Linting
+
+```bash
+pixi run lint
+```
+
+Or run the linters directly:
+
+```bash
+flake8 plugin.py --max-line-length=120
+pycodestyle plugin.py --max-line-length=120
+```
