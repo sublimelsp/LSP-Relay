@@ -1,9 +1,9 @@
 """LSP client for the Relay compiler's built-in language server."""
 
 from __future__ import annotations
-import subprocess
 from LSP.plugin import ClientConfig, WorkspaceFolder
 from lsp_utils import NpmClientHandler
+from lsp_utils.helpers import run_command_sync
 from typing import final
 import os
 import sublime
@@ -49,23 +49,16 @@ class LspRelayPlugin(NpmClientHandler):
         reason = super().can_start(window, initiating_view, workspace_folders, configuration)
         if reason:
             return reason
-        try:
-            workspace_path = workspace_folders[0].path
-            config_path = cls._get_config_path(workspace_path, configuration)
-            if config_path is not None:
-                validate_cmd = cls.get_command() + [config_path]
-            else:
-                validate_cmd = cls.get_command()
-            result = subprocess.run(
-                validate_cmd, cwd=workspace_folders[0].path, capture_output=True, text=True, timeout=10
-            )
-            # if it is started in a subprocess, it terminates with a protocol error if the configuration is valid
-            if result.returncode != 0 and "Relay LSP unexpectedly terminated: ProtocolError" not in result.stderr:
-                return "No Relay configuration found. Create relay.config.json or check LSP-Relay readme."
-        except subprocess.TimeoutExpired as e:
-            print(f"LSP-relay can_start: TimeoutExpired: {e}")
-        except Exception as e:
-            print(f"LSP-relay can_start: Exception: {e}")
+        workspace_path = workspace_folders[0].path
+        config_path = cls._get_config_path(workspace_path, configuration)
+        if config_path is not None:
+            validate_cmd = cls.get_command() + [config_path]
+        else:
+            validate_cmd = cls.get_command()
+        # The command always "fails" - with ProtocolError if config is valid, or a different error if not
+        _, error = run_command_sync(validate_cmd, cwd=workspace_path)
+        if error and "Relay LSP unexpectedly terminated: ProtocolError" not in error:
+            return "No Relay configuration found. Create relay.config.json or check LSP-Relay readme."
         return None
 
     @classmethod
