@@ -1,6 +1,7 @@
 """LSP client for the Relay compiler's built-in language server."""
 import os
 import sublime
+import subprocess
 from lsp_utils import NpmClientHandler
 from LSP.plugin.core.typing import List, Optional
 
@@ -21,6 +22,96 @@ class LspRelayPlugin(NpmClientHandler):
     server_binary_path = os.path.join(server_directory, 'node_modules', 'relay-compiler', 'cli.js')
 
     @classmethod
+    def get_binary_arguments(cls) -> List[str]:
+        """Return arguments for the relay-compiler CLI."""
+        settings = sublime.load_settings('LSP-relay.sublime-settings').get('settings', {})
+        args = ['lsp']
+
+        output_level = settings.get('lspOutputLevel') or 'quiet-with-errors'
+        if output_level:
+            args.append(f'--output={output_level}')
+
+        return args
+    
+    @classmethod
+    def can_start(
+        cls,
+        window: sublime.Window,
+        initiating_view: sublime.View,
+        workspace_folders: List,
+        configuration: 'ClientConfig'  # type: ignore
+    ) -> Optional[str]:
+        reason = super().can_start(window, initiating_view, workspace_folders, configuration)
+        """Check if a valid Relay configuration exists before starting the server."""
+        if reason:
+            return reason
+        try:
+            workspace_path=workspace_folders[0].path
+            config_path = cls._get_config_path(workspace_path, configuration)
+            if config_path is not None: 
+                 validate_cmd = cls.get_command() + [config_path]
+            else: 
+                validate_cmd = cls.get_command()
+            result = subprocess.run(
+                validate_cmd,
+                cwd=workspace_folders[0].path,
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            # if it is started in a subprocess, it terminates with a protocol error if the configuration is valid
+            if result.returncode != 0 and 'Relay LSP unexpectedly terminated: ProtocolError' not in result.stderr:
+                return "No Relay configuration found. Create relay.config.json or check LSP-Relay readme."
+        except subprocess.TimeoutExpired as e:
+            print(f'LSP-relay can_start: TimeoutExpired: {e}')
+        except Exception as e:
+            print(f'LSP-relay can_start: Exception: {e}')
+        return None
+    
+
+    @classmethod
+    def on_pre_start(
+        cls,
+        window: sublime.Window,
+        initiating_view: sublime.View,
+        workspace_folders: List,
+        configuration: 'ClientConfig'  # type: ignore
+    ) -> Optional[str]:
+        """Handle workspace-dependent config path resolution."""
+        workspace_path = workspace_folders[0].path if workspace_folders else ''
+        command = configuration.command
+        config_path = cls._get_config_path(workspace_path, configuration)
+        if config_path is not None:
+            command.append(config_path)
+        return None
+
+    
+
+    @classmethod
+    def _get_config_path(
+            cls, 
+                             workspace_path: str, 
+                             configuration: 'ClientConfig' # type: ignore
+                             ) -> Optional[str]:
+         """Handle workspace-dependent config path resolution."""
+         settings = configuration.settings
+         path_to_config = settings.get('pathToConfig') or ''
+         # Handle relative paths - resolve against workspace root
+         if path_to_config and not os.path.isabs(path_to_config) and workspace_path:
+            resolved_path = os.path.join(workspace_path, path_to_config)
+            print(f'LSP-relay on_pre_start: added relative config path={resolved_path}')
+            return resolved_path
+         # Fallback to VS Code settings if enabled and no pathToConfig set
+         elif not path_to_config and settings.get('useVSCodeRelaySettings') and workspace_path:
+            vscode_path = cls._get_vscode_relay_path_to_config(workspace_path)
+            if vscode_path:
+                if not os.path.isabs(vscode_path):
+                    vscode_path = os.path.join(workspace_path, vscode_path)
+                print(f'LSP-relay on_pre_start: added VS Code config path={vscode_path}')
+                return vscode_path
+         return None
+    
+    @classmethod
     def _get_vscode_relay_path_to_config(cls, workspace_path: str) -> Optional[str]:
         """Load pathToConfig from .vscode/settings.json if it exists."""
         vscode_settings_path = os.path.join(workspace_path, '.vscode', 'settings.json')
@@ -40,40 +131,4 @@ class LspRelayPlugin(NpmClientHandler):
                 return relay_settings.get('pathToConfig')
         except Exception as e:
             print(f'LSP-relay: Failed to read VS Code settings: {e}')
-        return None
-
-    @classmethod
-    def on_pre_start(
-        cls,
-        window: sublime.Window,
-        initiating_view: sublime.View,
-        workspace_folders: List,
-        configuration: 'ClientConfig'  # type: ignore
-    ) -> Optional[str]:
-        """Configure command arguments before the language server starts."""
-        settings = configuration.settings
-        workspace_path = workspace_folders[0].path if workspace_folders else ''
-
-        # Remove --stdio if present (relay lsp uses stdio by default)
-        command = configuration.command
-        if '--stdio' in command:
-            command.remove('--stdio')
-
-        # Insert 'lsp' subcommand after the script path
-        command.append('lsp')
-
-        output_level = settings.get('lspOutputLevel') or 'quiet-with-errors'
-        if output_level:
-            command.append(f'--output={output_level}')
-
-        path_to_config = settings.get('pathToConfig') or ''
-        if not path_to_config and settings.get('useVSCodeRelaySettings') and workspace_path:
-            path_to_config = cls._get_vscode_relay_path_to_config(workspace_path) or ''
-
-        if path_to_config:
-            # Resolve relative paths against workspace root
-            if workspace_path and not os.path.isabs(path_to_config):
-                path_to_config = os.path.join(workspace_path, path_to_config)
-            command.append(path_to_config)
-
         return None
