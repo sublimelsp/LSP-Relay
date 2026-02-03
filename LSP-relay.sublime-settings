@@ -1,5 +1,4 @@
 {
-	"initializationOptions": {},
 	"settings": {
 		// Path to a relay config file (absolute or relative to project root).
 		// Supports: relay.config.json, relay.config.js, relay.config.cjs, relay.config.mjs
