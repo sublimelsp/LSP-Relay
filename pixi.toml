@@ -3,14 +3,14 @@ name = "lsp-relay"
 version = "0.1.0"
 description = "LSP client for the Relay compiler's built-in language server"
 channels = ["conda-forge"]
-platforms = ["osx-arm64", "osx-64", "linux-64"]
+platforms = ["osx-arm64", "osx-64", "linux-64", "win-64"]
 
 [tasks]
 lint = "flake8 plugin.py --max-line-length=120 && pycodestyle plugin.py --max-line-length=120"
 format = "ruff format plugin.py --line-length=120"
 
 [dependencies]
-python = ">=3.9"
+python = ">=3.8,<3.9"
 flake8 = "*"
 pycodestyle = "*"
 ruff = "*"
