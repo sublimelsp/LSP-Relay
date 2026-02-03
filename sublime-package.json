@@ -1,0 +1,66 @@
+{
+  "contributions": {
+    "settings": [
+      {
+        "file_patterns": ["/LSP-relay.sublime-settings"],
+        "schema": {
+          "$id": "sublime://settings/LSP-relay",
+          "definitions": {
+            "PluginConfig": {
+              "properties": {
+                "initializationOptions": {
+                  "additionalProperties": false,
+                  "type": "object"
+                },
+                "settings": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "pathToConfig": {
+                      "type": "string",
+                      "default": "",
+                      "markdownDescription": "Path to a relay config file (absolute or relative to project root). Supports: `relay.config.json`, `relay.config.js`, `relay.config.cjs`, `relay.config.mjs`. If not specified, the compiler searches for config in `package.json` or `relay.config.*` files."
+                    },
+                    "lspOutputLevel": {
+                      "type": "string",
+                      "default": "quiet-with-errors",
+                      "enum": ["debug", "quiet", "quiet-with-errors", "verbose"],
+                      "markdownDescription": "LSP output verbosity level."
+                    },
+                    "useVSCodeRelaySettings": {
+                      "type": "boolean",
+                      "default": false,
+                      "markdownDescription": "When enabled, loads `pathToConfig` from `.vscode/settings.json` if not set above. Looks for `relay.pathToConfig` (either as a flat key or nested under `relay`)."
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "allOf": [
+            {"$ref": "sublime://settings/LSP-plugin-base"},
+            {"$ref": "sublime://settings/LSP-relay#/definitions/PluginConfig"}
+          ]
+        }
+      },
+      {
+        "file_patterns": ["/*.sublime-project"],
+        "schema": {
+          "properties": {
+            "settings": {
+              "properties": {
+                "LSP": {
+                  "properties": {
+                    "LSP-relay": {
+                      "$ref": "sublime://settings/LSP-relay#/definitions/PluginConfig"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
