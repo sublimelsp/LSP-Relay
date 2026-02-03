@@ -39,7 +39,7 @@ class LspRelayPlugin(NpmClientHandler):
             if isinstance(relay_settings, dict):
                 return relay_settings.get('pathToConfig')
         except Exception as e:
-            print('LSP-relay: Failed to read VS Code settings: {}'.format(e))
+            print(f'LSP-relay: Failed to read VS Code settings: {e}')
         return None
 
     @classmethod
@@ -64,7 +64,7 @@ class LspRelayPlugin(NpmClientHandler):
 
         output_level = settings.get('lspOutputLevel') or 'quiet-with-errors'
         if output_level:
-            command.append('--output={}'.format(output_level))
+            command.append(f'--output={output_level}')
 
         path_to_config = settings.get('pathToConfig') or ''
         if not path_to_config and settings.get('useVSCodeRelaySettings') and workspace_path:
