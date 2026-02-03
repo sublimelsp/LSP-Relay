@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LSP-relay is a Sublime Text plugin that provides an LSP client for the Relay Compiler's built-in language server. It enables IDE features (diagnostics, autocomplete, go-to-definition) for Relay projects in JavaScript/TypeScript files.
+LSP-relay is a Sublime Text plugin that provides an LSP client for the Relay Compiler's built-in language server. It enables IDE features (diagnostics, autocomplete, go-to-definition) for Relay projects in JavaScript/TypeScript files, specifically within `graphql` tagged template literals where Relay fragments, queries, mutations, and subscriptions are defined.
 
 ## Architecture
 
@@ -33,6 +33,16 @@ Config path resolution order:
 ## Testing Locally
 
 Install the package in Sublime Text's Packages folder (symlink or copy), then open a project with Relay configuration.
+
+## Development Setup
+
+This project uses [pixi](https://pixi.sh/) for Python environment management:
+
+```bash
+pixi install
+```
+
+If using [direnv](https://direnv.net/), the environment activates automatically via `.envrc`.
 
 ## Code Style
 
