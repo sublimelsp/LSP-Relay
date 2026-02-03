@@ -91,15 +91,9 @@ pixi install
 
 If you use [direnv](https://direnv.net/), the environment will be activated automatically when you enter the project directory.
 
-### Linting
+### Formatting and Linting
 
 ```bash
-pixi run lint
-```
-
-Or run the linters directly:
-
-```bash
-flake8 plugin.py --max-line-length=120
-pycodestyle plugin.py --max-line-length=120
+pixi run format  # Auto-format with ruff
+pixi run lint    # Check with flake8/pycodestyle
 ```

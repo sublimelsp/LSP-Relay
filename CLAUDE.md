@@ -46,13 +46,8 @@ If using [direnv](https://direnv.net/), the environment activates automatically 
 
 ## Code Style
 
-**Python linting (using pixi):**
+**Python formatting and linting (using pixi):**
 ```bash
-pixi run lint
-```
-
-Or directly:
-```bash
-flake8 plugin.py --max-line-length=120
-pycodestyle plugin.py --max-line-length=120
+pixi run format  # Auto-format with ruff
+pixi run lint    # Check with flake8/pycodestyle
 ```
