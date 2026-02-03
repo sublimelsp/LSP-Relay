@@ -17,22 +17,9 @@ This language server operates on JavaScript and TypeScript files (`source.js`, `
 
 ### Relay configuration
 
-The Relay language server requires a Relay configuration in your project. This can be:
+The Relay language server requires a Relay configuration in your project. 
 
-- `relay.config.json`, `relay.config.js`, `relay.config.cjs`, or `relay.config.mjs` in your project root
-- A `"relay"` key in your `package.json`
-
-Minimal example (`relay.config.json`):
-
-```json
-{
-  "src": "./src",
-  "schema": "./schema.graphql",
-  "language": "typescript"
-}
-```
-
-Refer to the [Relay Compiler Configuration](https://relay.dev/docs/guides/compiler/) documentation for more details.
+Refer to the [Relay Compiler Configuration](https://relay.dev/docs/guides/compiler/) documentation for details.
 
 ### Plugin settings
 
